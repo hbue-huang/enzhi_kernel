@@ -1067,8 +1067,10 @@ static int igbvf_request_msix(struct igbvf_adapter *adapter)
 	int err = 0, vector = 0;
 
 	if (strlen(netdev->name) < (IFNAMSIZ - 5)) {
-		sprintf(adapter->tx_ring->name, "%s-tx-0", netdev->name);
-		sprintf(adapter->rx_ring->name, "%s-rx-0", netdev->name);
+		snprintf(adapter->tx_ring->name, sizeof(adapter->tx_ring->name),
+			 "%s-tx-0", netdev->name);
+		snprintf(adapter->rx_ring->name, sizeof(adapter->rx_ring->name),
+			 "%s-rx-0", netdev->name);
 	} else {
 		memcpy(adapter->tx_ring->name, netdev->name, IFNAMSIZ);
 		memcpy(adapter->rx_ring->name, netdev->name, IFNAMSIZ);

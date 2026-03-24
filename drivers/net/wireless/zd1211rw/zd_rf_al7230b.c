@@ -326,6 +326,10 @@ static int zd1211b_al7230b_init_hw(struct zd_rf *rf)
 static int zd1211_al7230b_set_channel(struct zd_rf *rf, u8 channel)
 {
 	int r;
+	if (channel < 1 || channel > ARRAY_SIZE(chan_rv)) {
+		dev_err(zd_chip_dev(chip), "Invalid channel: %u\n", channel);
+		return -EINVAL;
+	}
 	const u32 *rv = chan_rv[channel-1];
 	struct zd_chip *chip = zd_rf_to_chip(rf);
 

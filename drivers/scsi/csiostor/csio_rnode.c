@@ -539,6 +539,10 @@ csio_rn_verify_rparams(struct csio_lnode *ln, struct csio_rnode *rn,
 	memcpy(csio_rn_wwpn(rn), rdevp->wwpn, 8);
 	rn->rn_sparm.csp.sp_bb_data = rdevp->rcv_fr_sz;
 	fc_class = FW_RDEV_WR_CLASS_GET(rdevp->vft_to_qos);
+	if (fc_class < 1 || fc_class > ARRAY_SIZE(rn->rn_sparm.clsp)) {
+		csio_err(hw, "Invalid FC class: %u\n", fc_class);
+		return -EINVAL;
+	}
 	rn->rn_sparm.clsp[fc_class - 1].cp_class = htons(FC_CPC_VALID);
 
 	return 0;

@@ -1504,12 +1504,12 @@ static int grow_stripes(struct r5conf *conf, int num)
 	int devs = max(conf->raid_disks, conf->previous_raid_disks);
 
 	if (conf->mddev->gendisk)
-		sprintf(conf->cache_name[0],
+		snprintf(conf->cache_name[0], sizeof(conf->cache_name[0]),
 			"raid%d-%s", conf->level, mdname(conf->mddev));
 	else
-		sprintf(conf->cache_name[0],
+		snprintf(conf->cache_name[0], sizeof(conf->cache_name[0]),
 			"raid%d-%p", conf->level, conf->mddev);
-	sprintf(conf->cache_name[1], "%s-alt", conf->cache_name[0]);
+	snprintf(conf->cache_name[1], sizeof(conf->cache_name[1]), "%s-alt", conf->cache_name[0]);
 
 	conf->active_name = 0;
 	sc = kmem_cache_create(conf->cache_name[conf->active_name],
@@ -5258,7 +5258,7 @@ static struct r5conf *setup_conf(struct mddev *mddev)
 		printk(KERN_INFO "md/raid:%s: allocated %dkB\n",
 		       mdname(mddev), memory);
 
-	sprintf(pers_name, "raid%d", mddev->new_level);
+	snprintf(pers_name, sizeof(pers_name), "raid%d", mddev->new_level);snprintf(pers_name, sizeof(pers_name), "raid%d", mddev->new_level);
 	conf->thread = md_register_thread(raid5d, mddev, pers_name);
 	if (!conf->thread) {
 		printk(KERN_ERR

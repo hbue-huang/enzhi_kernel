@@ -1432,32 +1432,31 @@ static int amb_proc_read (struct atm_dev * atm_dev, loff_t * pos, char * page) {
   
   if (!left--) {
     amb_stats * s = &dev->stats;
-    return sprintf (page,
-		    "frames: TX OK %lu, RX OK %lu, RX bad %lu "
-		    "(CRC %lu, long %lu, aborted %lu, unused %lu).\n",
-		    s->tx_ok, s->rx.ok, s->rx.error,
-		    s->rx.badcrc, s->rx.toolong,
-		    s->rx.aborted, s->rx.unused);
+		return snprintf (page, PAGE_SIZE,
+				"frames: TX OK %lu, RX OK %lu, RX bad %lu "
+				"(CRC %lu, long %lu, aborted %lu, unused %lu).\n",
+				s->tx_ok, s->rx.ok, s->rx.error,
+				s->rx.badcrc, s->rx.toolong,
+				s->rx.aborted, s->rx.unused);
   }
   
   if (!left--) {
     amb_cq * c = &dev->cq;
-    return sprintf (page, "cmd queue [cur/hi/max]: %u/%u/%u. ",
-		    c->pending, c->high, c->maximum);
+		return snprintf (page, PAGE_SIZE, "cmd queue [cur/hi/max]: %u/%u/%u. ",
+				c->pending, c->high, c->maximum);
   }
   
   if (!left--) {
     amb_txq * t = &dev->txq;
-    return sprintf (page, "TX queue [cur/max high full]: %u/%u %u %u.\n",
-		    t->pending, t->maximum, t->high, t->filled);
+		return snprintf (page, PAGE_SIZE, "TX queue [cur/max high full]: %u/%u %u %u.\n",
+				t->pending, t->maximum, t->high, t->filled);
   }
   
   if (!left--) {
     unsigned int count = sprintf (page, "RX queues [cur/max/req low empty]:");
     for (pool = 0; pool < NUM_RX_POOLS; ++pool) {
       amb_rxq * r = &dev->rxq[pool];
-      count += sprintf (page+count, " %u/%u/%u %u %u",
-			r->pending, r->maximum, r->buffers_wanted, r->low, r->emptied);
+			count += snprintf (page+count, PAGE_SIZE - count, " %u/%u/%u %u %u", r->pending, r->maximum, r->buffers_wanted, r->low, r->emptied);
     }
     count += sprintf (page+count, ".\n");
     return count;
@@ -1467,9 +1466,9 @@ static int amb_proc_read (struct atm_dev * atm_dev, loff_t * pos, char * page) {
     unsigned int count = sprintf (page, "RX buffer sizes:");
     for (pool = 0; pool < NUM_RX_POOLS; ++pool) {
       amb_rxq * r = &dev->rxq[pool];
-      count += sprintf (page+count, " %u", r->buffer_size);
+			count += snprintf (page+count, PAGE_SIZE - count, " %u", r->buffer_size);
     }
-    count += sprintf (page+count, ".\n");
+		count += snprintf (page+count, PAGE_SIZE - count, ".\n");
     return count;
   }
   

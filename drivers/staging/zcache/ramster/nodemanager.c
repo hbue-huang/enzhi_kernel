@@ -605,6 +605,9 @@ static ssize_t r2nm_cluster_attr_fence_method_write(
 {
 	unsigned int i;
 
+	if (count == 0 || count > PAGE_SIZE) {
+		return -EINVAL;
+	}
 	if (page[count - 1] != '\n')
 		goto bail;
 

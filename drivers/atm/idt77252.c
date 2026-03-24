@@ -1833,7 +1833,13 @@ push_rx_skb(struct idt77252_dev *card, struct sk_buff *skb, int queue)
 	if (idt77252_fbq_full(card, queue))
 		return -1;
 
-	memset(&skb->data[(skb->len & ~(0x3f)) - 64], 0, 2 * sizeof(u32));
+	size_t offset = (skb->len & ~(0x3f)) - 64;
+	if (offset > skb->len || offset + 2 * sizeof(u32) > skb->len) {
+		dev_err(&card->pcidev->dev, "Invalid buffer offset: %zu, skb->len: %u\n",
+			offset, skb->len);
+		return -EINVAL;
+	}
+	memset(&skb->data[offset], 0, 2 * sizeof(u32));
 
 	handle = IDT77252_PRV_POOL(skb);
 	addr = IDT77252_PRV_PADDR(skb);

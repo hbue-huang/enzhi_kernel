@@ -293,11 +293,17 @@ static ssize_t store_ctlr_mode(struct device *dev,
 
 	strncpy(mode, buf, count);
 
+	if (count == 0) {
+		return -EINVAL;
+	}
+	if (count > FCOE_MAX_MODENAME_LEN) {
+		return -EINVAL;
+	}
 	if (mode[count - 1] == '\n')
 		mode[count - 1] = '\0';
 	else
 		mode[count] = '\0';
-
+	
 	switch (ctlr->enabled) {
 	case FCOE_CTLR_ENABLED:
 		LIBFCOE_SYSFS_DBG(ctlr, "Cannot change mode when enabled.");

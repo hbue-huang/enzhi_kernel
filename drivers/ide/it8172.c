@@ -102,8 +102,12 @@ static void it8172_set_dma_mode(ide_hwif_t *hwif, ide_drive_t *drive)
 		pci_write_config_byte(dev, 0x48, reg48 & ~u_flag);
 		pci_write_config_byte(dev, 0x4a, reg4a & ~a_speed);
 
-		drive->pio_mode =
-			mwdma_to_pio[speed - XFER_MW_DMA_0] + XFER_PIO_0;
+		int idx = speed - XFER_MW_DMA_0;
+		if (idx < 0 || idx >= ARRAY_SIZE(mwdma_to_pio)) {
+			dev_err(&dev->dev, "Invalid MWDMA speed: %d\n", speed);
+			return;
+		}
+		drive->pio_mode = mwdma_to_pio[idx] + XFER_PIO_0;
 
 		it8172_set_pio_mode(hwif, drive);
 	}

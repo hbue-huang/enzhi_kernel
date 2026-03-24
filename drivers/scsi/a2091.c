@@ -72,9 +72,13 @@ static int dma_setup(struct scsi_cmnd *cmd, int dir_in)
 		}
 
 		if (!dir_in) {
-			/* copy to bounce buffer for a write */
+			if (cmd->SCp.this_residual > SIZE_MAX - 511) {
+				printk(KERN_ERR "a2091: DMA buffer size overflow\n");
+				wh->dma_bounce_len = 0;
+				return 1;
+			}
 			memcpy(wh->dma_bounce_buffer, cmd->SCp.ptr,
-			       cmd->SCp.this_residual);
+						cmd->SCp.this_residual);
 		}
 	}
 

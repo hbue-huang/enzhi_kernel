@@ -339,7 +339,13 @@ static void dispatch_port_event(struct ehca_shca *shca, int port_num,
 static void notify_port_conf_change(struct ehca_shca *shca, int port_num)
 {
 	struct ehca_sma_attr  new_attr;
-	struct ehca_sma_attr *old_attr = &shca->sport[port_num - 1].saved_attr;
+	struct ehca_sma_attr *old_attr;
+
+	if (port_num < 1 || port_num > EHCA_NUM_PORTS) {
+		ehca_err(&shca->ib_device, "Invalid port number: %d", port_num);
+		return;
+	}
+	old_attr = &shca->sport[port_num - 1].saved_attr;
 
 	ehca_query_sma_attr(shca, port_num, &new_attr);
 
@@ -387,7 +393,13 @@ static void parse_ec(struct ehca_shca *shca, u64 eqe)
 	u8 ec   = EHCA_BMASK_GET(NEQE_EVENT_CODE, eqe);
 	u8 port = EHCA_BMASK_GET(NEQE_PORT_NUMBER, eqe);
 	u8 spec_event;
-	struct ehca_sport *sport = &shca->sport[port - 1];
+	struct ehca_sport *sport;
+
+	if (port < 1 || port > EHCA_NUM_PORTS) {
+		ehca_err(&shca->ib_device, "Invalid port number from event: %d", port);
+		return;
+	}
+	sport = &shca->sport[port - 1];
 
 	switch (ec) {
 	case 0x30: /* port availability change */

@@ -315,6 +315,10 @@ static void zd1201_usbrx(struct urb *urb)
 		len = ntohs(*(__be16 *)&data[datalen-2]);
 		if (len>datalen)
 			len=datalen;
+		if (datalen < 24) {
+			dev_err(&zd->usb->dev, "Invalid data length: %d\n", datalen);
+			goto resubmit;
+		}
 		fc = le16_to_cpu(*(__le16 *)&data[datalen-16]);
 		seq = le16_to_cpu(*(__le16 *)&data[datalen-24]);
 

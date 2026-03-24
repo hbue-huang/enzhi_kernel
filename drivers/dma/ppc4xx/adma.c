@@ -1160,8 +1160,12 @@ static void ppc440spe_adma_device_clear_eot_status(
 		dma_reg = chan->device->dma_reg;
 		while ((rv = ioread32(&dma_reg->csfpl))) {
 			i = rv & DMA_CDB_ADDR_MSK;
-			cdb = (struct dma_cdb *)&p[i -
-			    (u32)chan->device->dma_desc_pool];
+			u32 pool_offset = (u32)chan->device->dma_desc_pool;
+			if (i < pool_offset) {
+				dev_err(chan->device->dev, "Invalid DMA descriptor address: i=%u < pool=%u\n", i, pool_offset);
+				break;
+			}
+			cdb = (struct dma_cdb *)&p[i - pool_offset];
 
 			/* Clear opcode to ack. This is necessary for
 			 * ZeroSum operations only
@@ -4663,8 +4667,11 @@ static ssize_t show_ppc440spe_devices(struct device_driver *dev, char *buf)
 		if (ppc440spe_adma_devices[i] == -1)
 			continue;
 		size += snprintf(buf + size, PAGE_SIZE - size,
-				 "PPC440SP(E)-ADMA.%d: %s\n", i,
-				 ppc_adma_errors[ppc440spe_adma_devices[i]]);
+				"PPC440SP(E)-ADMA.%d: %s\n", i,
+				ppc_adma_errors[ppc440spe_adma_devices[i]]);
+		if (ret < 0 || ret >= PAGE_SIZE - size)
+			return -EINVAL;
+		size += ret;
 	}
 	return size;
 }

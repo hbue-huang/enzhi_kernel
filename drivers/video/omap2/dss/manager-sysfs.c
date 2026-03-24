@@ -57,6 +57,9 @@ static ssize_t manager_display_store(struct omap_overlay_manager *mgr,
 		return sysfs_streq(dssdev->name, str);
 	}
 
+	if (size == 0) {
+		return -EINVAL;
+	}
 	if (buf[size-1] == '\n')
 		--len;
 
