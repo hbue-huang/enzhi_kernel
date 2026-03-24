@@ -253,10 +253,14 @@ int wusb_dev_sec_add(struct wusbhc *wusbhc,
 			break;
 		}
 		itr += etd->bLength;
-		bytes += snprintf(buf + bytes, sizeof(buf) - bytes,
+		int ret = snprintf(buf + bytes, sizeof(buf) - bytes,
 				  "%s (0x%02x/%02x) ",
 				  wusb_et_name(etd->bEncryptionType),
 				  etd->bEncryptionValue, etd->bAuthKeyIndex);
+		if (ret < 0 || ret >= sizeof(buf) - bytes) {
+				buf[sizeof(buf) - 1] = '\0';
+				break;
+		}
 		if (etd->bEncryptionType == USB_ENC_TYPE_CCM_1)
 			ccm1_etd = etd;
 	}

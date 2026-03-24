@@ -155,10 +155,10 @@ obj-$(CONFIG_MFD_SEC_CORE)	+= sec-core.o sec-irq.o
 obj-$(CONFIG_MFD_SYSCON)	+= syscon.o
 obj-$(CONFIG_MFD_LM3533)	+= lm3533-core.o lm3533-ctrlbank.o
 obj-$(CONFIG_VEXPRESS_CONFIG)	+= vexpress-config.o vexpress-sysreg.o
-obj-$(CONFIG_MFD_RETU)		+= retu-mfd.o
+#obj-$(CONFIG_MFD_RETU)		+= retu-mfd.o
 obj-$(CONFIG_MFD_AS3711)	+= as3711.o
 
-obj-$(CONFIG_MFD_DA9024)    	+= d2041-core.o d2041-irq.o d2041-i2c.o
+#obj-$(CONFIG_MFD_DA9024)    	+= d2041-core.o d2041-irq.o d2041-i2c.o
 obj-$(CONFIG_MFD_RICOH619)	+= ricoh619.o ricoh619-irq.o
 
 obj-$(CONFIG_MFD_JZ_TCU)		+= ingenic_tcu.o

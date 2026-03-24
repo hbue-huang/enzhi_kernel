@@ -1278,7 +1278,8 @@ mptscsih_info(struct Scsi_Host *SChost)
 		h->info_kbuf[0] = '\0';
 
 		mpt_print_ioc_summary(h->ioc, h->info_kbuf, &size, 0, 0);
-		h->info_kbuf[size-1] = '\0';
+		if (size > 0)
+			h->info_kbuf[size-1] = '\0';
 	}
 
 	return h->info_kbuf;

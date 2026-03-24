@@ -366,7 +366,7 @@ struct iscsi_np *iscsit_add_np(
 		np->np_port = ntohs(sock_in6->sin6_port);
 	} else {
 		sock_in = (struct sockaddr_in *)sockaddr;
-		sprintf(np->np_ip, "%s", ip_str);
+		snprintf(np->np_ip, sizeof(np->np_ip), "%s", ip_str);
 		np->np_port = ntohs(sock_in->sin_port);
 	}
 

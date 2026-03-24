@@ -99,7 +99,7 @@ static int usb_string_copy(const char *s, char **s_copy)
 	str = kstrdup(s, GFP_KERNEL);
 	if (!str)
 		return -ENOMEM;
-	if (str[ret - 1] == '\n')
+	if (ret > 0 && str[ret - 1] == '\n')
 		str[ret - 1] = '\0';
 	kfree(copy);
 	*s_copy = str;
@@ -245,7 +245,7 @@ static ssize_t gadget_dev_desc_UDC_store(struct gadget_info *gi,
 	name = kstrdup(page, GFP_KERNEL);
 	if (!name)
 		return -ENOMEM;
-	if (name[len - 1] == '\n')
+	if (len > 0 && name[len - 1] == '\n')
 		name[len - 1] = '\0';
 
 	mutex_lock(&gi->lock);

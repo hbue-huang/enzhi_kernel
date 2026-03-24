@@ -119,6 +119,8 @@ static int usb_console_setup(struct console *co, char *options)
 	if (retval)
 		goto error_get_interface;
 
+	if (co->index < serial->minor || co->index >= serial->minor + serial->nr)
+			return -ENODEV;
 	port = serial->port[co->index - serial->minor];
 	tty_port_tty_set(&port->port, NULL);
 

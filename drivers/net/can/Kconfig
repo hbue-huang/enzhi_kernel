@@ -138,8 +138,6 @@ source "drivers/net/can/cc770/Kconfig"
 
 source "drivers/net/can/usb/Kconfig"
 
-source "drivers/net/can/softing/Kconfig"
-
 endif
 
 config CAN_DEBUG_DEVICES
