@@ -3510,10 +3510,7 @@ static int init_card(struct atm_dev *dev)
 	printk("\n");
 #endif /* HAVE_EEPROM */
 
-	/*
-	 * XXX: <hack>
-	 */
-	sprintf(tname, "eth%d", card->index);
+	snprintf(tname, sizeof(tname), "eth%d", card->index);
 	tmp = dev_get_by_name(&init_net, tname);	/* jhs: was "tmp = dev_get(tname);" */
 	if (tmp) {
 		memcpy(card->atmdev->esi, tmp->dev_addr, 6);
@@ -3629,7 +3626,7 @@ static int idt77252_init_one(struct pci_dev *pcidev,
 	card->revision = pcidev->revision;
 	card->index = index;
 	card->pcidev = pcidev;
-	sprintf(card->name, "idt77252-%d", card->index);
+	snprintf(card->name, sizeof(card->name), "idt77252-%d", card->index);
 
 	INIT_WORK(&card->tqueue, idt77252_softint);
 

@@ -70,6 +70,10 @@ u64 ehca_define_sqp(struct ehca_shca *shca,
 	u8 port = qp_init_attr->port_num;
 	int counter;
 
+	if (port < 1 || port > EHCA_NUM_PORTS) {
+		ehca_err(&shca->ib_device, "Invalid port number: %u", port);
+		return H_PARAMETER;
+	}
 	shca->sport[port - 1].port_state = IB_PORT_DOWN;
 
 	switch (qp_init_attr->qp_type) {
@@ -89,6 +93,10 @@ u64 ehca_define_sqp(struct ehca_shca *shca,
 				 port, ret);
 			return ret;
 		}
+		if (port < 1 || port > EHCA_NUM_PORTS) {
+			ehca_err(&shca->ib_device, "Invalid port number: %u", port);
+			return H_PARAMETER;
+		}
 		shca->sport[port - 1].pma_qp_nr = pma_qp_nr;
 		ehca_dbg(&shca->ib_device, "port=%x pma_qp_nr=%x",
 			 port, pma_qp_nr);
@@ -102,6 +110,10 @@ u64 ehca_define_sqp(struct ehca_shca *shca,
 	if (ehca_nr_ports < 0) /* autodetect mode */
 		return H_SUCCESS;
 
+	if (port < 1 || port > EHCA_NUM_PORTS) {
+		ehca_err(&shca->ib_device, "Invalid port number: %u", port);
+		return H_PARAMETER;
+	}
 	for (counter = 0;
 	     shca->sport[port - 1].port_state != IB_PORT_ACTIVE &&
 		     counter < ehca_port_act_time;

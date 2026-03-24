@@ -248,7 +248,7 @@ static int ser_printk(const char *fmt, ...)
     int i;
 
     va_start(args,fmt);
-    i = vsprintf(strbuf,fmt,args);
+		i = vsnprintf(strbuf,sizeof(strbuf),fmt,args);
     ser_puts(strbuf);
     va_end(args);
     return i;
@@ -3662,7 +3662,7 @@ static void gdth_log_event(gdth_evt_data *dvr, char *buffer)
         if (buffer == NULL) {
             printk("Adapter %d: %s\n",dvr->eu.async.ionode,dvr->event_string); 
         } else {
-            sprintf(buffer,"Adapter %d: %s\n",
+						snprintf(buffer, PAGE_SIZE, "Adapter %d: %s\n",
                 dvr->eu.async.ionode,dvr->event_string); 
         }
     } else if (dvr->eu.async.service == CACHESERVICE && 
@@ -3693,7 +3693,7 @@ static void gdth_log_event(gdth_evt_data *dvr, char *buffer)
             printk(&f[(int)f[0]],stack); 
             printk("\n");
         } else {
-            sprintf(buffer,&f[(int)f[0]],stack); 
+						snprintf(buffer, PAGE_SIZE, &f[(int)f[0]], stack);
         }
 
     } else {
@@ -3701,7 +3701,7 @@ static void gdth_log_event(gdth_evt_data *dvr, char *buffer)
             printk("GDT HA %u, Unknown async. event service %d event no. %d\n",
                    dvr->eu.async.ionode,dvr->eu.async.service,dvr->eu.async.status);
         } else {
-            sprintf(buffer,"GDT HA %u, Unknown async. event service %d event no. %d",
+						snprintf(buffer, PAGE_SIZE, "GDT HA %u, Unknown async. event service %d event no. %d",
                     dvr->eu.async.ionode,dvr->eu.async.service,dvr->eu.async.status);
         }
     }
