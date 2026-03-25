@@ -253,6 +253,12 @@ static int cpu0_cpufreq_probe(struct platform_device *pdev)
 		opp = opp_find_freq_exact(cpu_dev,
 				freq_table[0].frequency * 1000, true);
 		min_uV = opp_get_voltage(opp);
+		if (i == 0) {
+			pr_err("cpufreq-cpu0: Invalid frequency table\n");
+			ret = -EINVAL;
+			rcu_read_unlock();
+			goto out_free_table;
+		}
 		opp = opp_find_freq_exact(cpu_dev,
 				freq_table[i-1].frequency * 1000, true);
 		max_uV = opp_get_voltage(opp);

@@ -128,6 +128,10 @@ static int __init macide_init(void)
 		return -ENODEV;
 	}
 
+	if (macintosh_config->ide_type < 1 || macintosh_config->ide_type > ARRAY_SIZE(mac_ide_name)) {
+		printk(KERN_ERR "ide: Invalid Macintosh IDE type: %d\n", macintosh_config->ide_type);
+		return -ENODEV;
+	}
 	printk(KERN_INFO "ide: Macintosh %s IDE controller\n",
 			 mac_ide_name[macintosh_config->ide_type - 1]);
 

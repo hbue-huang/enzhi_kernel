@@ -3845,19 +3845,24 @@ lpfc_fcp_cpu_map_show(struct device *dev, struct device_attribute *attr,
 
 	cpup = phba->sli4_hba.cpu_map;
 	for (idx = 0; idx < phba->sli4_hba.num_present_cpu; idx++) {
+		int ret;
 		if (cpup->irq == LPFC_VECTOR_MAP_EMPTY)
-			len += snprintf(buf + len, PAGE_SIZE-len,
+			ret = snprintf(buf + len, PAGE_SIZE-len,
 					"CPU %02d io_chan %02d "
 					"physid %d coreid %d\n",
 					idx, cpup->channel_id, cpup->phys_id,
 					cpup->core_id);
 		else
-			len += snprintf(buf + len, PAGE_SIZE-len,
+			ret = snprintf(buf + len, PAGE_SIZE-len,
 					"CPU %02d io_chan %02d "
 					"physid %d coreid %d IRQ %d\n",
 					idx, cpup->channel_id, cpup->phys_id,
 					cpup->core_id, cpup->irq);
-
+		if (ret < 0 || ret >= PAGE_SIZE - len) {
+				len = PAGE_SIZE - 1;
+				break;
+		}
+		len += ret;
 		cpup++;
 	}
 	return len;

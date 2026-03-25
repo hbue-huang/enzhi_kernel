@@ -763,6 +763,10 @@ static int pcan_usb_encode_msg(struct peak_usb_device *dev, struct sk_buff *skb,
 		pc += cf->can_dlc;
 	}
 
+	if (*size == 0 || *size > PCAN_USB_MAX_TX_PKT_SIZE) {
+		netdev_err(netdev, "Invalid size parameter: %zu\n", *size);
+		return -EINVAL;
+	}
 	obuf[(*size)-1] = (u8)(stats->tx_packets & 0xff);
 
 	return 0;
